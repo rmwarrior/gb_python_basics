@@ -77,3 +77,10 @@
 5. Интересно узнать про InnoDB / MyISAM / Memory / Archive
 ...
 ----------------------------------------------------------------------------------*/
+
+select 'Hello, World!!!' hello, 'DBeaver 21.1.5' from_person, sysdate() start_date
+
+
+hello		from_person	start_date
+-----		-----------	----------
+Hello, World!!!	DBeaver 21.1.5	2021-08-28 01:56:20
