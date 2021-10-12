@@ -265,6 +265,49 @@ delimiter ;
 
 
 ####################################
+delimiter |
+
+create trigger gb_curs_dnk.tr_issue_before_update before update on gb_curs_dnk.core_issue
+     for each row
+begin
+  declare msg varchar(1000);
+  declare l_spent_time numeric(19, 4);
+  if (old.name is null) or (old.name <> new.name) then set msg = concat('name=', new.name); end if;
+  if (old.parent_id is null) or (old.parent_id <> new.parent_id) then set msg = concat(msg, ' parent_id=', old.parent_id); end if;
+  if (old.project_id is null) or (old.project_id <> new.project_id) then set msg = concat(msg, ' project_id=', old.project_id); end if;
+  if (old.type_id is null) or (old.type_id <> new.type_id) then set msg = concat(msg, ' type_id=', old.type_id); end if;
+  if (old.category_id is null) or (old.category_id <> new.category_id) then set msg = concat(msg, ' category_id=', old.category_id); end if;
+  if (old.status_id is null) or (old.status_id <> new.status_id) then set msg = concat(msg, ' status_id=', old.status_id); end if;
+  if (old.priority_id is null) or (old.priority_id <> new.priority_id) then set msg = concat(msg, ' priority_id=', old.priority_id); end if;
+  if (old.author_id is null) or (old.author_id <> new.author_id) then set msg = concat(msg, ' author_id=', old.author_id); end if;
+  if (old.assigned_to is null) or (old.assigned_to <> new.assigned_to) then set msg = concat(msg, ' assigned_to=', old.assigned_to); end if;
+  if (old.team_name is null) or (old.team_name <> new.team_name) then set msg = concat(msg, ' team_name=', old.team_name); end if;
+  if (old.start_date is null) or (old.start_date <> new.start_date) then set msg = concat(msg, ' start_date=', old.start_date); end if;
+  if (old.due_date is null) or (old.due_date <> new.due_date) then set msg = concat(msg, ' due_date=', old.due_date); end if;
+  if (old.completion_date is null) or (old.completion_date <> new.completion_date) then set msg = concat(msg, ' completion_date=', old.completion_date); end if;
+#   if old.email_to <> new.email_to then set msg = msg + ' email_to=' + old.email_to; end if;
+#   if old.email_cc <> new.email_cc then set msg = msg + ' email_cc=' + old.email_cc; end if;
+  if (old.spent_time is null) or (old.spent_time <> new.spent_time) then
+      set msg = concat(msg, ' spent_time=', old.spent_time);
+      select sum(spent_time) into l_spent_time
+        from gb_curs_dnk.journal
+       where object_id = old.id;
+      set l_spent_time = l_spent_time + old.spent_time;
+  end if;
+  if (old.done_ratio is null) or (old.done_ratio <> new.done_ratio) then set msg = concat(msg, ' done_ratio=', old.done_ratio); end if;
+#   if old.fixed_version_id <> new.fixed_version_id then set msg = msg + ' fixed_version_id=' + old.fixed_version_id;
+#   if old.notes <> new.notes then set msg = msg + ' notes=' + old.notes;
+#   if old.subject <> new.subject then set msg = msg + ' subject=' + old.subject;
+#   if old.description <> new.description then set msg = msg + ' description=' + old.description;
+
+  insert into gb_curs_dnk.journal (object_type_id, object_id, user_id, spent_time, notes, created_at)
+  values (0, old.id, new.updated_by, l_spent_time, msg, now());
+
+end;
+
+delimiter ;
+
+####################################
 call gb_curs_dnk.sp_add_issue('Собрать сведения о транспорте', 0, 14,
     'BUSINESS', 'NORMAL', '', 1, 1, 'TASK',
     STR_TO_DATE('10/10/2021', '%d/%m/%Y'), STR_TO_DATE('30/10/2021', '%d/%m/%Y'),
