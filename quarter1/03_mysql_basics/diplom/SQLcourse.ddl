@@ -44,8 +44,8 @@ CREATE TABLE core_projects (
   notes            varchar(255), -- Комментарии
   subject          varchar(255), -- Тема
   description      varchar(255), -- Описание
-  created_at       date, 
-  updated_at       date, 
+  created_at       datetime,
+  updated_at       datetime,
   created_by       bigint,
   updated_by       bigint,
   valid_from       date,
@@ -67,9 +67,8 @@ CREATE TABLE core_users (
   password_hash varchar(100), -- 123456 => 24l5456345t
   gender        varchar(100),
   birth_date    date,
-  profile_id    bigint, -- Профиль
-  created_at    date,
-  updated_at    date,
+  created_at    datetime,
+  updated_at    datetime,
   created_by    bigint,
   updated_by    bigint,
   valid_from    date,
@@ -84,9 +83,9 @@ CREATE TABLE core_profiles (
   id         bigint NOT NULL AUTO_INCREMENT, 
   type_id    bigint, -- 1. Физ. лицо; 2. Юр.лицо, ИП…
   status_id  bigint, -- 1. Новый; 2. Неполный; 3. Полный; 4. Актуализировать
-  details_id bigint, -- ссылка на детали профиля
-  created_at date, 
-  updated_at date, 
+  user_id    bigint, -- Пользователь
+  created_at datetime,
+  updated_at datetime,
   created_by bigint,
   updated_by bigint,
   valid_from date,
@@ -105,8 +104,8 @@ CREATE TABLE core_details (
   info       varchar(255), -- детальная информация, адрес, реквизиты...
   media_id   bigint, -- ссылка на файл (фото, документ)
   look_id    bigint, -- возможность задать внешний вид (фон, шрифт..., если не rtf-формат)
-  created_at date, 
-  updated_at date, 
+  created_at datetime,
+  updated_at datetime,
   created_by bigint,
   updated_by bigint,
   valid_from date,
@@ -126,8 +125,8 @@ CREATE TABLE core_team (
   profile_id   bigint, -- ссылка на профиль
   user_id      bigint, -- ссылка на пользователя
   user_role_id bigint, -- ссылка на роль пользователя в команде: 1. Автор; 2. Исполнитель; 3. Наблюдатель; 4. Админ-тор
-  created_at   date, 
-  updated_at   date, 
+  created_at   datetime,
+  updated_at   datetime,
   created_by   bigint,
   updated_by   bigint,
   valid_from   date,
@@ -165,8 +164,8 @@ CREATE TABLE core_issue (
   notes            varchar(255), -- комментарии
   subject          varchar(255), -- тема
   description      varchar(255), -- описание
-  created_at       date, 
-  updated_at       date, 
+  created_at       datetime,
+  updated_at       datetime,
   created_by       bigint,
   updated_by       bigint,
   valid_from       date,
@@ -187,8 +186,8 @@ CREATE TABLE core_list_info (
   list_index     bigint, -- индекс в списке
   list_code      varchar(255), -- код в списке
   value          varchar(255), -- значение
-  created_at     date, 
-  updated_at     date, 
+  created_at     datetime,
+  updated_at     datetime,
   created_by     bigint,
   updated_by     bigint,
   valid_from     date,
@@ -209,8 +208,8 @@ CREATE TABLE custom_list_info (
   list_index     bigint, -- индекс в списке
   list_code      varchar(255), -- код в списке
   value          varchar(255), -- значение
-  created_at     date, 
-  updated_at     date, 
+  created_at     datetime,
+  updated_at     datetime,
   created_by     bigint,
   updated_by     bigint,
   valid_from     date,
@@ -228,7 +227,7 @@ CREATE TABLE journal (
   user_id        bigint, -- пользователь
   spent_time     numeric(19, 4), -- затрачено времени, ч.
   notes          varchar(255), -- комментарии
-  created_at     date,
+  created_at     datetime,
   PRIMARY KEY (id));
 
 ####################################
