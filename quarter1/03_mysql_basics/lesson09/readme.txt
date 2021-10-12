@@ -72,10 +72,63 @@ select p.name prod_name, c.name cat_name
 #    С 6:00 до 12:00 функция должна возвращать фразу "Доброе утро", с 12:00 до 18:00 функция должна возвращать фразу
 #    "Добрый день", с 18:00 до 00:00 — "Добрый вечер", с 00:00 до 6:00 — "Доброй ночи".
 
+delimiter !
+
+create procedure sample.hello()
+begin
+    select hour(now()) into @now_hour;
+
+    if @now_hour between 6 and 11 then
+        select 'Доброе утро';
+    else
+        if @now_hour between 12 and 17 then
+            select 'Добрый день';
+        else
+            if @now_hour between 18 and 23 then
+                select 'Добрый вечер';
+            else
+                select 'Доброй ночи';
+            end if;
+        end if;
+    end if;
+end;
+
+delimiter ;
+
+# call sample.hello();
+
+
+
 # 2. В таблице products есть два текстовых поля: name с названием товара и description с его описанием.
 #    Допустимо присутствие обоих полей или одно из них. Ситуация, когда оба поля принимают неопределенное значение
 #    NULL неприемлема. Используя триггеры, добейтесь того, чтобы одно из этих полей или оба поля были заполнены.
 #    При попытке присвоить полям NULL-значение необходимо отменить операцию.
+delimiter |
+
+create trigger tr_products_before_update before update on sample.products
+     for each row
+begin
+    if (new.name is null) and (new.description is null) then
+        set new := old; -- вызовет ошибку
+    end if;
+end;
+
+delimiter ;
+
+
+
+delimiter |
+
+create trigger tr_products_before_insert before insert on sample.products
+     for each row
+begin
+    if (new.name is null) and (new.description is null) then
+        set new := null; -- вызовет ошибку
+    end if;
+end;
+
+delimiter ;
+
 
 # 3. (по желанию) Напишите хранимую функцию для вычисления произвольного числа Фибоначчи.
 #    Числами Фибоначчи называется последовательность в которой число равно сумме двух предыдущих чисел.
