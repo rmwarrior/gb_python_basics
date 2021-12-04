@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+
+<body>
+  <!--
+1.2 (обязательное задание)
+Сделайте в стиле es5, а затем в стиле es6.
+а) конструктор Post, который принимает параметры author, text, date и
+ сохраняет их как свойства объекта. Объекты типа Post должны иметь метод edit,
+ который будет принимать текст и записывать его в свойство text объекта.
+б) конструктор AttachedPost, который принимает параметры author, text, date.
+Проинициализируйте эти свойства с помощью конструктора Post, чтобы не
+дублировать код. Также в конструкторе AttachedPost должно создаваться 
+свойство highlighted со значением false. Унаследуйте в объектах типа
+AttachedPost методы из Post.
+Объекты типа AttachedPost должны иметь метод makeTextHighlighted, который
+будет назначать свойству highlighted значение true.
+-->
+  <script>
+    "use strict";
+
+    //////////////////////////////////////////////////// в стиле es5
+    /**
+     * Post_5
+    */
+    function Post_5(author, text, date) {
+      this.author = author;
+      this.text = text;
+      this.date = date;
+    }
+
+    Post_5.prototype.edit = function (txt) {
+      this.text = txt;
+      this.date = new Date(); // Обновим дату
+    }
+    const p5 = new Post_5('King 5', 'Carrie', new Date('1976', '05' - 1, '12'));
+    console.log(p5.author, p5.text, p5.date);
+    p5.edit('The Shining');
+    console.log(p5.author, p5.text, p5.date);
+
+    function AttachedPost_5(author, text, date) {
+      Post_5.call(this, author, text, date);
+      this.highlighted = false;
+    }
+
+    /**
+     * AttachedPost_5
+    */
+    AttachedPost_5.prototype = Object.create(Post_5.prototype);
+    AttachedPost_5.prototype.makeTextHighlighted = function () {
+      this.highlighted = true;
+    };
+
+    const ap5 = new AttachedPost_5('King 5', 'Carrie',
+      new Date('1976', '05' - 1, '12'));
+    console.log(ap5.author, ap5.text, ap5.date, ap5.highlighted);
+    ap5.makeTextHighlighted();
+    console.log(ap5.author, ap5.text, ap5.date, ap5.highlighted);
+
+
+    console.log('-----separator-----');
+    //////////////////////////////////////////////////// в стиле es6
+    /**
+     * Post_6
+    */
+    class Post_6 {
+      constructor(author, text, date) {
+        this.author = author;
+        this.text = text;
+        this.date = date;
+      }
+
+      edit = function (txt) {
+        this.text = txt;
+        this.date = new Date(); // Обновим дату
+      }
+    }
+    const p6 = new Post_5('King 6', 'Carrie', new Date('1976', '05' - 1, '12'));
+    console.log(p6.author, p6.text, p6.date);
+    p6.edit('The Shining');
+    console.log(p6.author, p6.text, p6.date);
+
+    /**
+     * AttachedPost_6
+    */
+    class AttachedPost_6 extends Post_6 {
+      constructor(author, text, date) {
+        super(author, text, date);
+        this.highlighted = false;
+      }
+
+      makeTextHighlighted() {
+        this.highlighted = true;
+      };
+    }
+
+    const ap6 = new AttachedPost_6('King 6', 'Carrie',
+      new Date('1976', '05' - 1, '12'));
+    console.log(ap6.author, ap6.text, ap6.date, ap6.highlighted);
+    ap6.makeTextHighlighted();
+    console.log(ap6.author, ap6.text, ap6.date, ap6.highlighted);
+
+  </script>
+</body>
+
+</html>
